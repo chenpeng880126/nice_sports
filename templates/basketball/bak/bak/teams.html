@@ -1,0 +1,164 @@
+{% load staticfiles %}
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Teams</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="{% static 'assets/css/main.css' %}" />
+
+		<link rel="stylesheet" type="text/css" href="{% static 'colorTable/css/normalize.css' %}" />
+		<link rel="stylesheet" type="text/css" href="{% static 'colorTable/css/default.css' %}" />
+		<link rel="stylesheet" type="text/css" href="{% static 'colorTable/css/montserrat.css' %}" />
+		<link type="text/css" href="{% static 'colorTable/css/styles.css' %}" media="all" rel="stylesheet" />
+		<link type="text/css" href="{% static 'colorTable/css/stickysort.css' %}" media="all" rel="stylesheet" />
+
+	</head>
+	<body class="homepage is-preload">
+		<div id="page-wrapper">
+			<!-- Header -->
+				<section id="header">
+					<!-- Logo -->
+						<h1><a href="home">2019&nbsp&nbsp"张江杯"篮球联赛</a></h1>
+					<!-- Nav -->
+						<nav id="nav">
+							<ul>
+								<li><a href="home">Home</a></li>
+								<li class="current"><a href="teams">Teams</a></li>
+								<li><a href="schedule">Schedule</a></li>
+								<li><a href="credit">Credit</a></li>
+								<li><a href="playoff">Playoff</a></li>
+							</ul>
+						</nav>
+				</section>	
+			<!-- Main -->
+				<section id="main">
+					<div class="container">
+						<!-- Content -->
+						<article class="box post" id="main-content">
+							<header>
+								<h2>球队概览</h2>
+							</header>
+							
+							<section class="demo" id="basic">
+								<h3>甲级</h3>
+								<table>
+									<thead>
+										<tr>
+											<th>球队ID</th>
+											<th>球队组别</th>
+											<th>球队名称</th>
+											<th>球队简称</th>
+										</tr>
+									</thead>
+									<tbody id="level1">
+									</tbody>
+								</table>
+							</section>
+							<section class="demo" id="basic-sort">
+								<h3>乙级</h3>
+								<table>
+									<thead>
+										<tr>
+											<th>球队ID</th>
+											<th>球队组别</th>
+											<th>球队名称</th>
+											<th>球队简称</th>
+										</tr>
+									</thead>
+									<tbody id="level2">
+									</tbody>
+								</table>
+							</section>
+							<section class="demo">
+								<h3>竞娱组</h3>
+								<table>
+									<thead>
+										<tr>
+											<th>球队ID</th>
+											<th>球队组别</th>
+											<th>球队名称</th>
+											<th>球队简称</th>
+										</tr>
+									</thead>
+									<tbody id="level3">
+									</tbody>
+								</table>
+							</section>
+						</article>
+					</div>
+				</section>
+			<!-- Footer -->
+			<section>
+				<div class="col-12">
+						<div id="copyright">
+							<ul class="links">
+								<li>Email: white.chen@qq.com</li>
+								<li>Phone: 18801930989</li>
+							</ul>
+						</div>
+				</div>
+			</section>
+
+		</div>
+		<script src="{% static 'colorTable/js/jquery-2.1.1.min.js' %}"></script>
+		<script src="{% static 'colorTable/js/jquery.ba-throttle-debounce.min.js' %}"></script>
+		<script src="{% static 'colorTable/js/jquery.stickysort.js' %}"></script>
+		<script type="text/javascript">
+			$(function () {
+				
+				generate_team_table();
+				$('table').stickySort({ sortable: true });
+				// Section toggle
+				$('section.demo h3')
+				.append('<a href="#" title="Collapse section" class="toggle">Collapse</a>')
+				.on('click', 'a', function(e) {
+					e.preventDefault();
+					
+					if(!$(this).data('state') || $(this).data('state') == 0) {
+						$(this)
+						.data('state', 1)
+						.attr('title', 'Expand section')
+						.text('Expand')
+						.parent()
+							.siblings()
+								.stop(true,true).slideUp();
+					} else {
+						$(this)
+						.data('state', 0)
+						.attr('title', 'Collapse section')
+						.text('Collapse')
+						.parent()
+							.siblings()
+								.stop(true,true).slideDown();
+					}
+				});
+			});
+
+			function generate_team_table(){
+				var data = {{ data|safe }};
+				for(var i=0;i<data.length;i++){
+					if(data[i].team_level == "甲级"){
+						$('#level1').append("<tr><td>"+data[i].team_id+
+											"</td><td>"+data[i].team_group_no+
+											"</td><td>"+data[i].team_name+
+											"</td><td>"+data[i].team_nick_name+
+											"</td>")
+					}else if(data[i].team_level == "乙级"){
+						$('#level2').append("<tr><td>"+data[i].team_id+
+											"</td><td>"+data[i].team_group_no+
+											"</td><td>"+data[i].team_name+
+											"</td><td>"+data[i].team_nick_name+
+											"</td>")
+					}else if(data[i].team_level == "竞娱组"){
+						$('#level3').append("<tr><td>"+data[i].team_id+
+											"</td><td>"+data[i].team_group_no+
+											"</td><td>"+data[i].team_name+
+											"</td><td>"+data[i].team_nick_name+
+											"</td>")
+					}
+				}
+			}
+		</script>
+	</body>
+</html>

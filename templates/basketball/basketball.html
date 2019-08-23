@@ -1,0 +1,106 @@
+{% load staticfiles %}
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>template</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="{% static 'assets/css/main.css' %}" />
+
+		<link rel="stylesheet" type="text/css" href="{% static 'colorTable/css/normalize.css' %}" />
+		<link rel="stylesheet" type="text/css" href="{% static 'colorTable/css/default.css' %}" />
+		<link rel="stylesheet" type="text/css" href="{% static 'colorTable/css/montserrat.css' %}" />
+		<link type="text/css" href="{% static 'colorTable/css/styles.css' %}" media="all" rel="stylesheet" />
+		<link type="text/css" href="{% static 'colorTable/css/stickysort.css' %}" media="all" rel="stylesheet" />
+	</head>
+	<body class="homepage is-preload">
+		<div id="page-wrapper">
+			<!-- Header -->
+				<section id="header">
+					<!-- Logo -->
+						<h1><a href="home">year&nbsp&nbsp"league"篮球联赛</a></h1>
+						<p id='league_info' hidden='hidden'></p>
+					<!-- Nav -->
+						<nav id="nav">
+							<ul>
+								<li id='nav-home'><a href="home">Home</a></li>
+								<li id='nav-teams'><a href="teams">Teams</a></li>
+								<li id='nav-schedule'><a href="schedule">Schedule</a></li>
+								<li id='nav-credit'><a href="credit">Credit</a></li>
+								<li id='nav-playoff'><a href="playoff">Playoff</a></li>
+							</ul>
+						</nav>
+				</section>	
+			<!-- Main -->
+			<section id="main">
+				<div class="container">
+					<!-- Content -->
+					<article class="box post" id="main-content">
+					</article>
+				</div>
+			</section>
+			<!-- Footer -->
+			<section>
+				<div class="col-12">
+						<div id="copyright">
+							<ul class="links">
+								<li>Email: white.chen@qq.com</li>
+								<li>Phone: 18801930989</li>
+							</ul>
+						</div>
+				</div>
+			</section>
+		</div>
+		<script src="{% static 'colorTable/js/jquery-2.1.1.min.js' %}"></script>
+		<script src="{% static 'colorTable/js/jquery.ba-throttle-debounce.min.js' %}"></script>
+		<script src="{% static 'colorTable/js/jquery.stickysort.js' %}"></script>
+		<script src="{% static 'assets/js/basketball.js' %}"></script>
+		<script type="text/javascript">
+			function page_init(){
+				var input = {{ data|safe }};
+				console.log(input);
+				var league_info = input.league_info;
+				$('#league_info').val(league_info);
+				
+				var header_title = "year 'league'篮球联赛".replace('league',LEAGUE_MAP[league_info[0]])
+														.replace('year',league_info[1]);
+				$("#header h1 a").text(header_title);
+				$('#main-content').append(PAGE_HEADER[league_info[2]]);
+				$('#nav-'+league_info[2]).addClass("current");
+				$('title').text(league_info[2]);
+				
+				var navs = ['home','teams','schedule','credit','playoff']
+				for (var i in navs){
+					var href = $('#nav-'+navs[i]+' a').attr('href')+"?league="+league_info[0]+"&year="+league_info[1];
+					$('#nav-'+navs[i]+' a').attr('href',href);
+				}
+				//create table
+				var data = input.data;
+				if (typeof(data) =='string' & data.length>0) data = JSON.parse(data); 
+
+				switch (league_info[2]){
+					case 'teams':
+						generate_teams_table(data);
+						break;
+					case 'schedule':
+						generate_schedule_table(data);
+						break;
+					case 'credit':
+						var complete_games = input.complete_games;
+						generate_credit_table(data);
+						if(complete_games.length>0){
+							fill_up_credit(complete_games);
+						};
+						break;
+					case 'playoff':
+						generate_playoff_table(data);
+						break;
+				}
+			}
+			$(function () {
+				page_init();
+				table_init();	
+			});
+		</script>
+	</body>
+</html>

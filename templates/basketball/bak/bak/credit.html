@@ -1,0 +1,152 @@
+{% load staticfiles %}
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Credit</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="{% static 'assets/css/main.css' %}" />
+
+		<link rel="stylesheet" type="text/css" href="{% static 'colorTable/css/normalize.css' %}" />
+		<link rel="stylesheet" type="text/css" href="{% static 'colorTable/css/default.css' %}" />
+		<link rel="stylesheet" type="text/css" href="{% static 'colorTable/css/montserrat.css' %}" />
+		<link type="text/css" href="{% static 'colorTable/css/styles.css' %}" media="all" rel="stylesheet" />
+		<link type="text/css" href="{% static 'colorTable/css/stickysort.css' %}" media="all" rel="stylesheet" />
+	</head>
+	<body class="homepage is-preload">
+		<div id="page-wrapper">
+			<!-- Header -->
+				<section id="header">
+					<!-- Logo -->
+						<h1><a href="home">2019&nbsp&nbsp"张江杯"篮球联赛</a></h1>
+
+					<!-- Nav -->
+						<nav id="nav">
+							<ul>
+								<li><a href="home">Home</a></li>
+								<li><a href="teams">Teams</a></li>
+								<li><a href="schedule">Schedule</a></li>
+								<li class="current"><a href="credit">Credit</a></li>
+								<li><a href="playoff">Playoff</a></li>
+							</ul>
+						</nav>
+				</section>	
+			<!-- Main -->
+			<section id="main">
+				<div class="container">
+					<!-- Content -->
+					<article class="box post" id="main-content">
+						<header>
+							<h2>积分规则</h2>
+						</header>
+						<p>
+							1、胜一场积2 分，负一场（包括比赛因缺少队员告负）积1分， 比赛因弃权、罢赛告负得0分。最后总积分多者列前。<br/>
+							2、如果在这个排列中两个球队积分相等，则以这两个队之间比赛的结果来确定名次，胜者排名列前。 <br/>3、如果两队以上积分仍相等，则采用下列办法决定名次：A（胜局总数）/B（负局总数）=C值，C值高者名次列前。 <br/>
+							4、如果C值仍相等，则采用：X（总得分数）/Y（总失分数）=Z值，Z值高者名次列前。 <br/>
+							5、如果小组中只有三个球队参加比赛，并用上述的步骤（Z值完全相同）不能决出名次，则用每对得分多少来确定名次，得分多者名次排列。
+						</p>
+						<section class="level" id="level_1">
+							<h3>甲级</h3>
+						</section>
+						<section  class="level" id="level_2">
+							<h3>乙级</h3>
+						</section>
+						<section class="level" id="level_3">
+							<h3>竞娱组</h3>
+						</section>
+					</article>
+				</div>
+			</section>
+			<!-- Footer -->
+			<section>
+				<div class="col-12">
+						<div id="copyright">
+							<ul class="links">
+								<li>Email: white.chen@qq.com</li>
+								<li>Phone: 18801930989</li>
+							</ul>
+						</div>
+				</div>
+			</section>
+
+		</div>
+		<script src="{% static 'colorTable/js/jquery-2.1.1.min.js' %}"></script>
+		<script src="{% static 'colorTable/js/jquery.ba-throttle-debounce.min.js' %}"></script>
+		<script src="{% static 'colorTable/js/jquery.stickysort.js' %}"></script>
+		<script>
+				$(function () {
+					generate_credit_table();
+
+					$('table').stickySort({ sortable: false });
+
+					$('table th,tr,td').css(
+						{"border":"1px solid #ccc",
+						"border-collapse":"collapse",
+						"width":"60px",
+						"font-size":"10px",
+						"text-align":"left"});	
+
+					$('section.level h3')
+					.append('<a href="#" title="Collapse section" class="toggle">Collapse</a>')
+					.on('click', 'a', function(e) {
+						e.preventDefault();
+						
+						if(!$(this).data('state') || $(this).data('state') == 0) {
+							$(this)
+							.data('state', 1)
+							.attr('title', 'Expand section')
+							.text('Expand')
+							.parent()
+								.siblings()
+									.stop(true,true).slideUp();
+						} else {
+							$(this)
+							.data('state', 0)
+							.attr('title', 'Collapse section')
+							.text('Collapse')
+							.parent()
+								.siblings()
+									.stop(true,true).slideDown();
+						}
+					});
+
+					$('a.toggle').css({"background-color":'#B22222'})
+					$('#level_1 th').css({"background-color":'#800000'})
+					$('#level_2 th').css({"background-color":'#A0522D'})
+					$('#level_3 th').css({"background-color":'#006400'})
+
+				});
+				function generate_credit_table(){
+					var data = {{ data|safe }};
+					for(var i in data){
+						d2 = data[i]
+						if(i=='甲级'){
+							for(var j=0;j<d2.length;j++){
+								for(var key in d2[j]){
+									//console.log(d2[j][key])
+									$('#level_1').append(d2[j][key])	
+								}
+							}
+						}else if(i=='乙级'){
+							for(var j=0;j<d2.length;j++){
+								for(var key in d2[j]){
+									//console.log(d2[j][key])
+									$('#level_2').append(d2[j][key])	
+								}
+							}
+						}else if(i=='竞娱组'){
+							for(var j=0;j<d2.length;j++){
+								for(var key in d2[j]){
+									//console.log(d2[j][key])
+									$('#level_3').append(d2[j][key])	
+								}
+							}
+
+						}
+						
+					}
+				}
+				
+		</script>
+	</body>
+</html>
